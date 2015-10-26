@@ -1,0 +1,7 @@
+application: huge-echo
+
+dispatch:
+
+### Amazon Echo
+- url: "*/echo*"
+  module: echo

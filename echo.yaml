@@ -1,0 +1,29 @@
+application: huge-echo
+version: 0-1-0
+runtime: python27
+api_version: 1
+threadsafe: true
+module: echo
+
+
+handlers:
+
+- url: .*
+  script: echo.application._APP
+  secure: always
+
+
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
+
+
+skip_files:
+
+- ^(.*/)?.*\py[co]
+- ^(.*/)?\.DS_Store
+- ^tests/.*
+- ^\.git/.*
+- ^static/.*

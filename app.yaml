@@ -1,0 +1,23 @@
+version: 0-1-0
+application: huge-echo
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+
+### Static
+- url: /static
+  static_dir: static
+  secure: always
+
+- url: .*
+  script: main.application
+  secure: always
+
+skip_files:
+
+- ^(.*/)?.*\py[co]
+- ^(.*/)?\.DS_Store
+- ^tests/.*
+- ^\.git/.*
