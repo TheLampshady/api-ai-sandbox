@@ -18,7 +18,7 @@ class HelloWorldHandler(BaseEchoSecurityHandler):
         request_type = self.info['request']['type']
 
         if request_type == 'LaunchRequest':
-            message = ''
+            message = 'Hello huge! Bow to your new master!'
         elif request_type == 'IntentRequest':
             intent = self.info['request']['intent']['name']
             if intent == 'WhoIs':
