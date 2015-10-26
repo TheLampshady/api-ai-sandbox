@@ -26,7 +26,7 @@ class HelloWorldHandler(BaseEchoSecurityHandler):
 
                 if name.lower() == 'ryan':
                     message = 'Who? You mean Ryan? Fuck that guy.'
-                if name.lower() == 'levi':
+                elif name.lower() == 'levi':
                     message = 'A level 9 Jew.'
                 else:
                     message = 'Sorry, do not know that name.'
