@@ -22,12 +22,15 @@ class HelloWorldHandler(BaseEchoSecurityHandler):
         elif request_type == 'IntentRequest':
             intent = self.info['request']['intent']['name']
             if intent == 'WhoIs':
-                name = self.info['request']['intent']['slots']['name']['value']
+                name = self.info['request']['intent']['slots']['name']['value'].lower()
 
-                if name.lower() == 'ryan':
+                if name == 'ryan':
                     message = 'Who? You mean Ryan? Fuck that guy.'
-                elif name.lower() == 'levi':
+                elif name in ('levi', 'livi', 'levy'):
                     message = 'A level 9 Jew.'
+                elif name in ('leza', 'lisa', 'liza', 'leeza'):
+                    message = 'A super mean project manager who never allows anyone to have fun.'
+
                 else:
                     message = 'Sorry, do not know that name.'
             else:
