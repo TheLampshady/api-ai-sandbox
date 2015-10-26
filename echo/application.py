@@ -30,9 +30,11 @@ class HelloWorldHandler(BaseEchoSecurityHandler):
                     message = 'A level 9 Jew.'
                 elif name in ('leza', 'lisa', 'liza', 'leeza'):
                     message = 'A super mean project manager who never allows anyone to have fun.'
+                elif name in ('peenack'):
+                    message = 'A cruel tyrant who lords over us all.'
 
                 else:
-                    message = 'Sorry, do not know that name.'
+                    message = 'Sorry, do not know who {name} is.'.format(name=name.capitalize())
             else:
                 message = 'Sorry, do not understand that command.'
 
