@@ -30,7 +30,7 @@ class HelloWorldHandler(BaseEchoSecurityHandler):
                     message = 'A level 9 Jew.'
                 elif name in ('leza', 'lisa', 'liza', 'leeza'):
                     message = 'A super mean project manager who never allows anyone to have fun.'
-                elif name in ('peenack'):
+                elif name in ('peenack', 'peanut', 'pinack', 'peenak', 'knock', 'penis'):
                     message = 'A cruel tyrant who lords over us all.'
 
                 else:
