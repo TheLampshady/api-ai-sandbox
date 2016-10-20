@@ -3,6 +3,7 @@ from google.appengine.ext import ndb
 
 
 class EventLog(ndb.Model):
+    method = ndb.StringProperty()
     request = ndb.JsonProperty()
     response = ndb.JsonProperty()
     # event timestamp
@@ -15,8 +16,8 @@ class EventLog(ndb.Model):
 
     @classmethod
     @ndb.tasklet
-    def new(cls, request):
-        el = EventLog(request=request)
+    def new(cls, request, method=None):
+        el = EventLog(request=request, method=method)
         yield el.put_async()
         raise ndb.Return(el)
 

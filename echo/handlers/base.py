@@ -4,6 +4,7 @@ import logging
 import posixpath
 import urlparse
 import webapp2
+from echo.models.eventLog import EventLog
 
 log = logging.getLogger(__name__)
 
@@ -23,6 +24,7 @@ class BaseEchoSecurityHandler(webapp2.RequestHandler):
         scheme = url.scheme
         hostname = url.netloc
         path = posixpath.normpath(url.path)
+        self.eventLog = EventLog.new(self.request.body, method=self.request.method)
         self.info = info = json.loads(self.request.body)
 
         # verify high level stuff about the request header cert URL
@@ -45,3 +47,8 @@ class BaseEchoSecurityHandler(webapp2.RequestHandler):
     def abort(self, code, *args, **kwargs):
         log.error(self.request)
         super(BaseEchoSecurityHandler, self).abort(code, *args, **kwargs)
+
+    def answer(self, response):
+        msg = json.dumps(response)
+        self.eventLog.close(response=msg)
+        self.response.write(msg)

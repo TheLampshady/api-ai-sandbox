@@ -66,7 +66,7 @@ class HelloWorldHandler(BaseEchoSecurityHandler):
             "shouldEndSession": True
           }
         }
-        self.response.write(json.dumps(response))
+        self.answer(response)
 
 
 _APP = webapp2.WSGIApplication([
