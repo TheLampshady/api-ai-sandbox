@@ -25,7 +25,7 @@ class BaseEchoSecurityHandler(webapp2.RequestHandler):
         scheme = url.scheme
         hostname = url.netloc
         path = posixpath.normpath(url.path)
-        self.eventLog = EventLog.new(self.request.body, method=self.request.method)
+        self.eventLog = EventLog.new(self.request.body, method=self.request.method).get_result()
         self.info = info = json.loads(self.request.body)
 
         # verify high level stuff about the request header cert URL

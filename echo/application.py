@@ -15,6 +15,7 @@ class MainHandler(webapp2.RequestHandler):
 class HelloWorldHandler(BaseEchoSecurityHandler):
 
     def post(self):
+        message = 'No matching pattern.'
         request_type = self.info['request']['type']
 
         if request_type == 'LaunchRequest':
