@@ -8,6 +8,8 @@ log = logging.getLogger(__name__)
 package = 'DataGallery'
 
 CONTENT_TYPES = [NUGGET_TYPE, ARTICLE_TYPE]
+DONUT_CART = "donut_chart"
+RATIO = "ratio"
 
 class JsonField(messages.StringField):
     type = dict
@@ -78,13 +80,24 @@ class SearchApi(remote.Service):
             key_words=reduce(lambda x,y: x+y, result.get("facets_info").values())
         )
 
-    def format_text_results(self, entries):
+    @staticmethod
+    def format_text_results(entries):
         result = []
         for entry in entries:
-            if entry.get("source_type") == ARTICLE_TYPE:
-                if entry.get("title"):
-                    result.append(entry.get("title"))
-            else:
-                result.append(entry.get("meta_description"))
+            text = None
+            if entry.get("source_type") == NUGGET_TYPE:
+                card_type = entry.get("card_type")
+                if card_type == DONUT_CART:
+                    text = "%s percent %s" % (entry.get("percentage"), entry.get("body"))
+                elif card_type == RATIO:
+                    text = "%s of %s %s" % (entry.get("feature_text"), entry.get("feature_text_alt"), entry.get("body"))
+                else:
+                    text = entry.get("body")
 
+            else:
+                if entry.get("title"):
+                    text = entry.get("title")
+
+            if text:
+                    result.append(text)
         return result
