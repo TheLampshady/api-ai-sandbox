@@ -62,7 +62,7 @@ class SearchApi(remote.Service):
         if content_type not in CONTENT_TYPES:
             endpoints.BadRequestException("Invalid Content Type: Options [%s]" % CONTENT_TYPES)
 
-        params = dict(query=request.query, locale=request.locale, count=False, limit=20)
+        params = dict(query=request.query, locale=request.locale, count=False, limit=40)
         if content_type:
             params['source_type'] = content_type
 
@@ -106,6 +106,19 @@ class SearchApi(remote.Service):
                 if entry.get("title"):
                     text = entry.get("title")
 
-            if text:
+            if is_valid_text(text):
                     result.append(text)
         return result
+
+
+def is_valid_text(text):
+    if not text:
+        return False
+
+    if isinstance(text, basestring):
+        if text[0].islower():
+            return False
+
+    return True
+
+

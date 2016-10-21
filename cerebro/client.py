@@ -7,6 +7,7 @@ from google.appengine.ext import ndb
 CEREBRO_ROOT = "https://cerebro-dot-gthink-dmx-dev.appspot.com"
 SEARCH_PATH = "/_ah/api/search_api/v1/search"
 
+
 class SearchClient(object):
     _client = None
     TIMEOUT_DEADLINE = 30
