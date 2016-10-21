@@ -1,8 +1,6 @@
 import endpoints, logging
 from protorpc import messages, remote
-
 from cerebro import NUGGET_TYPE, ARTICLE_TYPE, CARD_TYPES, DEFAULT_LOCALE
-
 from cerebro.client import SearchClient
 
 log = logging.getLogger(__name__)
@@ -29,7 +27,7 @@ SEARCH_RESOURCE_CONTAINER_FIELDS = {
 
 
 class QueryTwG(messages.Message):
-    query = messages.StringField(1, default="")
+    query = messages.StringField(1)
     content_type = messages.StringField(2)
     locale = messages.StringField(3, default=DEFAULT_LOCALE)
     sort = messages.StringField(4)
@@ -40,6 +38,12 @@ class SearchResult(messages.Message):
     key_words = ListField(8)
 
 
+SEARCH_RESOURCE = endpoints.ResourceContainer(QueryTwG)
+KEYWORD_RESOURCE = endpoints.ResourceContainer(
+    locale=messages.StringField(1, variant=messages.Variant.STRING, default=DEFAULT_LOCALE)
+)
+
+
 @endpoints.api(
     name='search_api',
     canonical_name='Search API',
@@ -47,14 +51,9 @@ class SearchResult(messages.Message):
     description="For Searching Think with Google.",
 )
 class SearchApi(remote.Service):
-    SEARCH_RESOURCE = endpoints.ResourceContainer(QueryTwG)
-    KEYWORD_RESOURCE = endpoints.ResourceContainer(
-        locale=messages.StringField(1, variant=messages.Variant.STRING, default=DEFAULT_LOCALE)
-    )
-
     @endpoints.method(SEARCH_RESOURCE, SearchResult,
                       http_method='GET', path='query', name='query')
-    def get(self, request):
+    def query(self, request):
         content_type = request.content_type.lower()
 
         if content_type and content_type not in CONTENT_TYPES:
@@ -70,7 +69,7 @@ class SearchApi(remote.Service):
 
         return SearchResult(
             text="Millennial Dads is all you need to know about",
-            key_words=reduce(lambda x,y: x+y, result.get("facets_info"))
+            key_words=reduce(lambda x, y: x+y, result.get("facets_info"))
         )
 
     @endpoints.method(KEYWORD_RESOURCE, SearchResult, http_method='GET', path='keyword', name='keyword')
