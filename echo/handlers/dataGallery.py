@@ -88,7 +88,8 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
             if intentStr == 'WhoIs':
                 field = self.info['request']['intent']['slots']['name']['value'].lower()
             elif intentStr == 'SearchFor':
-                field = self.info['request']['intent']['slots']['search'].get('value', '').lower()
+                field = self.info['request']['intent']['slots']['search'].get('value', '')\
+                    .lower().replace('the', '').replace('and', '')
                 if not field:
                     return self.answer(buildResponse(message='Missing search term.'))
 
