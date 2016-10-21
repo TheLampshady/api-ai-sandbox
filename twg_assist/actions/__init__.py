@@ -1,6 +1,6 @@
 import json
 import random
-import urllib
+from google.appengine.api import urlfetch
 
 
 def mine_data(data):
@@ -16,12 +16,34 @@ def handle_filter(criterion):
     print('filtering by criterion: %s' % criterion)
 
 
-def handle_find(query):
+def handle_find(result):
+    query = result.get("parameters").get("any")
     base_url = 'https://huge-echo.appspot.com/_ah/api/twg_api/v1/query?query='
     twg_query = base_url + query
-    res = urllib.request.urlopen(twg_query).read()
+    res = urlfetch.fetch(twg_query)
+    res.content
 
-    return json.loads(str(res, 'utf-8'))
+    data = json.loads(str(res, 'utf-8'))
+    nugget_text, nugget_url = mine_data(data)
+
+    return {
+        'speech': nugget_text,
+        'displayText': nugget_text,
+        'data': {
+            'slack': nugget_text
+        },
+        'contextOut': [
+            {
+                'name': 'nugget',
+                'lifespan': 5,
+                'parameters': {
+                    'nugget_text': nugget_text,
+                    'nugget_url': nugget_url
+                }
+            }
+        ],
+        "source": 'twg-webhook-processor'
+    }
 
 
 def handle_download(context):

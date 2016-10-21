@@ -10,32 +10,34 @@ log = logging.getLogger(__name__)
 
 
 supported_actions = {
-    'find': handle_find,
-    'filter': handle_filter,
-    'download': handle_download,
-    'show': handle_show
+    '.find': handle_find,
+    '.filter': handle_filter,
+    '.download': handle_download,
+    '.show': handle_show
 }
 
 
 class APIAIHandler(webapp2.RequestHandler):
 
     def post(self):
-        result = self.request.get("result")
+        content = json.loads(self.request.body)
+        result = content.get("result")
+        action = supported_actions.get(result.get('action'))
 
-        log.info('Request: %s' )
+        data = action(result)
+        nugget_text, nugget_url = mine_data(data)
 
-        res = process_request(result)
+        res = curate_webhook_response(nugget_text, nugget_url)
 
         res = json.dumps(res, indent=4)
         self.response.headers['Content-Type'] = 'application/json'
         return self.response.out.write(json.dumps(res))
 
 
-def process_request(result):
-    params = result.get('parameters')
-    query = params.get('any')
+def process_request(request):
+    action = supported_actions.get(request.get('action'))
 
-    data = handle_find(query)
+    data = action(request)
     nugget_text, nugget_url = mine_data(data)
 
     return curate_webhook_response(nugget_text, nugget_url)

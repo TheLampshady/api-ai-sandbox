@@ -76,7 +76,7 @@ class SearchApi(remote.Service):
         return SearchResult(
             text=text_list,
             urls=url_list,
-            key_words=reduce(lambda x, y: x+y, result.get("facets_info").values())
+            key_words=reduce(lambda x, y: x+y, result.get("facets_info", {}).values())
         )
 
     @endpoints.method(KEYWORD_RESOURCE, SearchResult, http_method='GET', path='keyword', name='keyword')
@@ -85,7 +85,7 @@ class SearchApi(remote.Service):
         result = search_client.get_facets(request.locale)
 
         return SearchResult(
-            key_words=reduce(lambda x,y: x+y, result.get("facets_info").values())
+            key_words=reduce(lambda x,y: x+y, result.get("facets_info", {}).values())
         )
 
     @staticmethod
