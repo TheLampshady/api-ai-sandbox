@@ -2,6 +2,7 @@ import json
 import logging
 import webapp2
 from echo.handlers import BaseEchoSecurityHandler
+from echo.handlers.dataGallery import DataGalleryHandler
 
 log = logging.getLogger(__name__)
 
@@ -72,5 +73,6 @@ class HelloWorldHandler(BaseEchoSecurityHandler):
 
 _APP = webapp2.WSGIApplication([
     webapp2.Route('/echo', handler=MainHandler, name='echo-home'),
+    webapp2.Route('/echo/data-gallery', handler=DataGalleryHandler, name='echo-data-gallery'),
     webapp2.Route('/echo/hello-world', handler=HelloWorldHandler, name='echo-hello-world'),
 ], debug=True)
