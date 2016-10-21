@@ -1,6 +1,7 @@
 import json
 import webapp2
 from echo.models.eventLog import EventLog
+from handlers.default import DefaultsHandler
 from handlers.event import EventIndexHandler, EventDetailHandler
 
 
@@ -30,6 +31,7 @@ class DummyEventGenerateHandler(webapp2.RequestHandler):
 
 routes = [
     webapp2.Route('/echo/admin', handler=EventIndexHandler, name='echo-event-index'),
+    webapp2.Route('/echo/admin/default-intents', handler=DefaultsHandler),
     webapp2.Route('/echo/admin/dummy-event', handler=DummyEventGenerateHandler),
     webapp2.Route('/echo/admin/event/detail/<eventId:([A-Za-z0-9-]+)>',
                   handler=EventDetailHandler, name='echo-event-detail'),
