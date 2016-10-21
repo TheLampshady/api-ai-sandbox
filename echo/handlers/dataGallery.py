@@ -80,13 +80,13 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
 
             if intentStr == 'Execute':
                 command = self.info['request']['intent']['slots']['action']['value'].lower()
-                if command == 'repeat':
+                if command in ('repeat', 'say again'):
                     context = Context.query().get()
                     if hasattr(context, 'lastResponse') and context.lastResponse:
                         return self.answer(buildResponse(message=context.lastResponse))
                     else:
                         return self.answer(buildResponse(message='Sorry I could not find a previous response.'))
-                if command in ('another one', 'another 1'):
+                elif command in ('another one', 'another 1'):
                     if hasattr(context, 'lastField') and context.lastField:
                         field = context.lastField
                     else:
