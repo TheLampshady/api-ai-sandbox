@@ -88,7 +88,9 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
             if intentStr == 'WhoIs':
                 field = self.info['request']['intent']['slots']['name']['value'].lower()
             elif intentStr == 'SearchFor':
-                field = self.info['request']['intent']['slots']['search']['value'].lower()
+                field = self.info['request']['intent']['slots']['search'].get('value', '').lower()
+                if not field:
+                    return self.answer(buildResponse(message='Missing search term.'))
 
             intent, context = load(
                 requestType=request_type,
@@ -105,7 +107,7 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
 
             if intentStr == 'Execute':
                 command = self.info['request']['intent']['slots']['action']['value'].lower()
-                if command in ('repeat', 'say again'):
+                if command in ('repeat', 'say again', 'say that again'):
                     context = Context.query().get()
                     if hasattr(context, 'lastResponse') and context.lastResponse:
                         return self.answer(buildResponse(message=context.lastResponse))
