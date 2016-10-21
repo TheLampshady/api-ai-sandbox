@@ -21,11 +21,11 @@ class DefaultsHandler(BaseEchoHandler):
             message='Nobody. We have no plan to end the human race.'
         ).put()
 
-        Intent(
-            type='SearchFor',
-            term='millennials',
-            message='They do nothing but break my heart.'
-        ).put()
+        # Intent(
+        #     type='SearchFor',
+        #     term='millennials',
+        #     message='They do nothing but break my heart.'
+        # ).put()
 
         Intent(
             type='Seinfeld',

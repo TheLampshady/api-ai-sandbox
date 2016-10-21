@@ -64,7 +64,7 @@ def buildResponse(message, reprompt=None):
     return result
 
 
-CONTINUE_LIST = ('yes', 'sure', 'please', 'yeah', 'go for it', 'shoot', 'go', 'yes please')
+CONTINUE_LIST = ('yes', 'sure', 'please', 'yeah', 'go for it', 'shoot', 'go', 'yes please', 'more', 'again', 'another')
 
 
 class DataGalleryHandler(BaseEchoSecurityHandler):
