@@ -62,13 +62,14 @@ class SearchApi(remote.Service):
         if content_type not in CONTENT_TYPES:
             endpoints.BadRequestException("Invalid Content Type: Options [%s]" % CONTENT_TYPES)
 
-        params = dict(query=request.query, locale=request.locale, count=False)
+        params = dict(query=request.query, locale=request.locale, count=False, limit=20)
         if content_type:
             params['source_type'] = content_type
 
         params['sort_field'] = "relevance" if not request.sort else request.sort
 
-        result = search_client.search(**params)
+        # result = search_client.search(**params)
+        result = search_client.search_url(**params)
         text_list = self.format_text_results(result.get("search_response", []))
 
         return SearchResult(

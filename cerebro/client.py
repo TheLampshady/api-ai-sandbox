@@ -1,5 +1,7 @@
 import logging
+import json
 from googleapiclient.discovery import build
+from google.appengine.api import urlfetch
 
 CEREBRO_ROOT = "https://cerebro-dot-gthink-dmx-dev.appspot.com"
 
@@ -47,6 +49,17 @@ class SearchClient(object):
             logging.warning(e.message)
             self.reset_service()
             return self.client.search(**kwargs).execute()
+
+    @staticmethod
+    def search_url(**kwargs):
+        search_path = "/_ah/api/search_api/v1/search"
+        url = CEREBRO_ROOT + search_path
+        if kwargs:
+            params = ["%s=%s" % (k,v) for k,v in kwargs.items()]
+            url = "%s?%s" % (url, "&".join(params))
+
+        result = urlfetch.fetch(url)
+        return json.loads(result.content)
 
     def get_facets(self, locale):
         """
