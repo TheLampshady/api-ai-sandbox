@@ -1,7 +1,7 @@
 import logging
 from googleapiclient.discovery import build
 
-CEREBRO_ROOT = "https://gthink-dmx-dev.appspot.com"
+CEREBRO_ROOT = "https://cerebro-dot-gthink-dmx-dev.appspot.com"
 
 
 class SearchClient(object):

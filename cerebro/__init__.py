@@ -1,3 +1,4 @@
+from client import SearchClient
 
 CARD_TYPES = [
     'quote',
@@ -13,3 +14,5 @@ NUGGET_TYPE = "loki_site"
 ARTICLE_TYPE = "twg_site"
 
 DEFAULT_LOCALE = "en-us"
+
+search_client = SearchClient()
