@@ -5,6 +5,8 @@ api_version: 1
 threadsafe: true
 module: echo
 
+includes:
+- echo/include.yaml
 
 handlers:
 

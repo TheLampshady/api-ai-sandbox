@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Echo Admin{% endblock %}</title>
+      <link rel="stylesheet" href="//storage.googleapis.com/think-test/bootstrap/bootstrap.min.css">
+  </head>
+<body>
+    <div class="container">
+      {% block content %} {% endblock %}
+    </div>
+    <script src="//storage.googleapis.com/think-test/bootstrap/jquery.min.js"></script>
+    <script src="//storage.googleapis.com/think-test/bootstrap/bootstrap.min.js"></script>
+    {% block script %} {% endblock %}
+</body>
+</html>

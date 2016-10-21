@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Echo Event Index</title>
-</head>
-<body>
-Hello world!
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Event Logs{% endblock %}
+
+{% block content %}
+<h3>Event Logs</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Created</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for eventLog in eventLogs %}
+    <tr>
+      <td>{{eventLog.created}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
