@@ -23,6 +23,38 @@
       "slots": [
         {"name": "search", "type": "SEARCH"}
       ]
+    },
+    {
+      "intent": "Execute",
+      "slots": [
+        {"name": "action", "type": "ACTION"}
+      ]
     }
   ]
 }
+
+/*
+Huge tell me hello
+Execute to {action}
+Execute for {action}
+WhoIs who is {name}
+SearchFor about {search}
+SearchFor for a random fact about {search}
+SearchFor for random info about {search}
+SearchFor for random info on {search}
+SearchFor for random information about {search}
+SearchFor for random information on {search}
+SearchFor to tell me about {search}
+SearchFor for insights about {search}
+SearchFor for data about {search}
+SearchFor for data on {search}
+SearchFor for stats about {search}
+SearchFor for stats on {search}
+SearchFor for info about {search}
+SearchFor for info on {search}
+SearchFor for information about {search}
+SearchFor for information on {search}
+SearchFor to give me data about {search}
+SearchFor to give me data on {search}
+Seinfeld tell a joke about {search}
+*/
