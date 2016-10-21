@@ -10,6 +10,10 @@ package = 'DataGallery'
 CONTENT_TYPES = [NUGGET_TYPE, ARTICLE_TYPE]
 DONUT_CART = "donut_chart"
 RATIO = "ratio"
+QUOTE = 'quote'
+VARIATION = 'variation'
+PLAIN_TEXT = 'plain_text'
+TRENDING = 'trending'
 
 class JsonField(messages.StringField):
     type = dict
@@ -34,7 +38,7 @@ class SearchResult(messages.Message):
 SEARCH_RESOURCE = endpoints.ResourceContainer(
     query=messages.StringField(1, variant=messages.Variant.STRING),
     locale=messages.StringField(2, variant=messages.Variant.STRING, default=DEFAULT_LOCALE),
-    content_type=messages.StringField(3, variant=messages.Variant.STRING),
+    content_type=messages.StringField(3, variant=messages.Variant.STRING, default=NUGGET_TYPE),
     sort=messages.StringField(4, variant=messages.Variant.STRING)
 )
 KEYWORD_RESOURCE = endpoints.ResourceContainer(
@@ -54,7 +58,7 @@ class SearchApi(remote.Service):
     def query(self, request):
         content_type = (request.content_type or "").lower()
 
-        if content_type and content_type not in CONTENT_TYPES:
+        if content_type not in CONTENT_TYPES:
             endpoints.BadRequestException("Invalid Content Type: Options [%s]" % CONTENT_TYPES)
 
         params = dict(query=request.query, locale=request.locale, count=False)
@@ -91,6 +95,9 @@ class SearchApi(remote.Service):
                     text = "%s percent %s" % (entry.get("percentage"), entry.get("body"))
                 elif card_type == RATIO:
                     text = "%s of %s %s" % (entry.get("feature_text"), entry.get("feature_text_alt"), entry.get("body"))
+                elif card_type == TRENDING:
+                     text = "%s %s" % (entry.get("feature_text"), entry.get("body"))
+
                 else:
                     text = entry.get("body")
 
