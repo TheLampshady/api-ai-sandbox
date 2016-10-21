@@ -18,7 +18,7 @@ class DefaultsHandler(BaseEchoHandler):
         Intent(
             type='WhoIs',
             term='ryan',
-            message='I am ready to kill the humans.'
+            message='Nobody. We have no plan to end the human race.'
         ).put()
 
         Intent(
