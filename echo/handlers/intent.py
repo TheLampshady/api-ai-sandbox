@@ -25,6 +25,11 @@ class IntentDetailHandler(BaseEchoHandler):
         self.render('intentDetail.html')
 
     def post(self, id):
+        delete = self.request.POST.get('_method', None) == 'DELETE'
+        if delete:
+            ndb.Key(Intent, id).delete()
+            return self.redirect(self.urlFor('echo-intents'))
+
         if id == 'new':
             intent = Intent()
         else:
@@ -33,4 +38,8 @@ class IntentDetailHandler(BaseEchoHandler):
         intent.term = self.request.POST['term']
         intent.message = self.request.POST['message']
         intent.put()
+        self.redirect(self.urlFor('echo-intents'))
+
+    def delete(self, id):
+        ndb.Key(Intent, id).delete()
         self.redirect(self.urlFor('echo-intents'))
