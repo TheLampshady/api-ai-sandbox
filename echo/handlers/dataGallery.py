@@ -12,12 +12,11 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
             message = 'Hello huge! Bow to your new master!'
         else:
             intentStr = self.info['request']['intent']['name']
+            field = None
 
             if intentStr == 'WhoIs':
                 field = self.info['request']['intent']['slots']['name']['value'].lower()
             elif intentStr == 'SearchFor':
-                field = self.info['request']['intent']['slots']['search']['value'].lower()
-            elif intentStr == 'Seinfeld':
                 field = self.info['request']['intent']['slots']['search']['value'].lower()
 
             intent = Intent.query(
