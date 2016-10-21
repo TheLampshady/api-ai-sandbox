@@ -22,8 +22,8 @@ def load(requestType, intentType, intentTerm):
     raise ndb.Return(intent, context)
 
 
-def buildResponse(message):
-    return {
+def buildResponse(message, reprompt=None):
+    result = {
         "version" : "1.0",
         # "sessionAttributes": {
         #     "supportedHoriscopePeriods": {
@@ -52,6 +52,20 @@ def buildResponse(message):
         }
     }
 
+    if reprompt is not None:
+        result['response']["shouldEndSession"] = False
+        result['response']['reprompt'] = {
+            'outputSpeech': {
+                'type': 'PlainText',
+                'text': reprompt,
+            }
+        }
+
+    return result
+
+
+CONTINUE_LIST = ('yes', 'sure', 'please', 'yeah', 'go for it', 'shoot', 'go', 'yes please')
+
 
 class DataGalleryHandler(BaseEchoSecurityHandler):
 
@@ -61,6 +75,7 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
         searchResult = None
         field = None
         intentStr = None
+        reprompt = None
 
         if request_type == 'LaunchRequest':
             message = 'Hello huge! Bow to your new master!'
@@ -77,6 +92,13 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                 intentType=intentStr,
                 intentTerm=field
             ).get_result()
+
+            if intentStr == 'Continue':
+                cont = self.info['request']['intent']['slots']['response']['value']
+                if cont in CONTINUE_LIST and hasattr(context, 'lastField') and context.lastField:
+                        field = context.lastField
+                else:
+                    return self.answer(buildResponse(message='Was that good for you too?'))
 
             if intentStr == 'Execute':
                 command = self.info['request']['intent']['slots']['action']['value'].lower()
@@ -105,6 +127,10 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                 results = SearchApi.format_text_results(searchResult.get("search_response", []))
                 if results:
                     message = results[randint(0, len(results) - 1)].replace('&', 'and')
+
+                    if len(results) > 1:
+                        reprompt = 'I found more than {c} results. Would you like to hear another?'.format(
+                            c=(len(results) - 1))
             else:
                 return self.answer(buildResponse(message='Huge could not find a matching command.'))
 
@@ -112,4 +138,4 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
         context.lastField = field
         context.lastResponse = message
         context.put()
-        self.answer(buildResponse(message=message))
+        self.answer(buildResponse(message=message, reprompt=reprompt))
