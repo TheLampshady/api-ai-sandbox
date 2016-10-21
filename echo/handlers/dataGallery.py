@@ -1,5 +1,19 @@
 from base import BaseEchoSecurityHandler
+from echo.models.context import Context
 from echo.models.intent import Intent
+from google.appengine.ext import ndb
+
+
+@ndb.tasklet
+def load(requestType, intentType, intentTerm):
+    intent = Intent.query(
+        Intent.requestType == requestType,
+        Intent.type == intentType,
+        Intent.term == intentTerm,
+    )
+    context = Context.query()
+    intent, context = yield intent.get_async(), context.get_async()
+    raise ndb.Return(intent, context)
 
 
 class DataGalleryHandler(BaseEchoSecurityHandler):
@@ -12,19 +26,18 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
             message = 'Hello huge! Bow to your new master!'
         else:
             intentStr = self.info['request']['intent']['name']
+            field = None
 
             if intentStr == 'WhoIs':
                 field = self.info['request']['intent']['slots']['name']['value'].lower()
             elif intentStr == 'SearchFor':
                 field = self.info['request']['intent']['slots']['search']['value'].lower()
-            elif intentStr == 'Seinfeld':
-                field = self.info['request']['intent']['slots']['search']['value'].lower()
 
-            intent = Intent.query(
-                Intent.requestType == request_type,
-                Intent.type == intentStr,
-                Intent.term == field,
-            ).get()
+            intent, context = load(
+                requestType=request_type,
+                intentType=intentStr,
+                intentTerm=field
+            ).get_result()
 
             if intent:
                 message = intent.getAnswer(self.info)
