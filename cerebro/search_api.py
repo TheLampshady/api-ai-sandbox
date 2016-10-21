@@ -52,7 +52,8 @@ class SearchApi(remote.Service):
         locale=messages.StringField(1, variant=messages.Variant.STRING, default=DEFAULT_LOCALE)
     )
 
-    @endpoints.method(SEARCH_RESOURCE, SearchResult, http_method='GET', path='query', name='query')
+    @endpoints.method(SEARCH_RESOURCE, SearchResult,
+                      http_method='GET', path='query', name='query')
     def get(self, request):
         content_type = request.content_type.lower()
 
