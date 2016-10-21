@@ -59,12 +59,24 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
         message = 'Sorry, if millennials do not know about this it cannot be a thing.'
         request_type = self.info['request']['type']
         searchResult = None
+        field = None
+        intentStr = None
 
         if request_type == 'LaunchRequest':
             message = 'Hello huge! Bow to your new master!'
         else:
             intentStr = self.info['request']['intent']['name']
-            field = None
+
+            if intentStr == 'WhoIs':
+                field = self.info['request']['intent']['slots']['name']['value'].lower()
+            elif intentStr == 'SearchFor':
+                field = self.info['request']['intent']['slots']['search']['value'].lower()
+
+            intent, context = load(
+                requestType=request_type,
+                intentType=intentStr,
+                intentTerm=field
+            ).get_result()
 
             if intentStr == 'Execute':
                 command = self.info['request']['intent']['slots']['action']['value'].lower()
@@ -74,22 +86,18 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                         return self.answer(buildResponse(message=context.lastResponse))
                     else:
                         return self.answer(buildResponse(message='Sorry I could not find a previous response.'))
+                if command in ('another one', 'another 1'):
+                    if hasattr(context, 'lastField') and context.lastField:
+                        field = context.lastField
+                    else:
+                        return self.answer(buildResponse(message='Sorry I cannot find a previous search to repeat.'))
                 else:
                     return self.answer(buildResponse(message='Sorry I do not know the command {c}.'.format(c=command)))
-            elif intentStr == 'WhoIs':
-                field = self.info['request']['intent']['slots']['name']['value'].lower()
-            elif intentStr == 'SearchFor':
-                field = self.info['request']['intent']['slots']['search']['value'].lower()
 
+            if field:
                 searchResult = search_client.search(
                     query=field
                 )
-
-            intent, context = load(
-                requestType=request_type,
-                intentType=intentStr,
-                intentTerm=field
-            ).get_result()
 
             if intent:
                 message = intent.getAnswer(self.info)
@@ -97,7 +105,11 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                 results = SearchApi.format_text_results(searchResult.get("search_response", []))
                 if results:
                     message = results[randint(0, len(results) - 1)].replace('&', 'and')
+            else:
+                return self.answer(buildResponse(message='Huge could not find a matching command.'))
 
+        context.lastIntentType = intentStr
+        context.lastField = field
         context.lastResponse = message
         context.put()
         self.answer(buildResponse(message=message))
