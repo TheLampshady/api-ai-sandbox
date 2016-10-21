@@ -102,7 +102,7 @@ class SearchApi(remote.Service):
                 elif card_type == RATIO:
                     text = "%s of %s %s" % (entry.get("feature_text"), entry.get("feature_text_alt"), entry.get("body"))
                 elif card_type == TRENDING:
-                     text = "%s precent %s" % (entry.get("feature_text"), entry.get("body"))
+                     text = "%s percent %s" % (entry.get("feature_text"), entry.get("body"))
                 elif card_type == PLAIN_TEXT:
                     text = entry.get("body")
 
