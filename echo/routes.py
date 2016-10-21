@@ -1,5 +1,7 @@
+import json
 import webapp2
-from handlers.event import EventIndexHandler
+from echo.models.eventLog import EventLog
+from handlers.event import EventIndexHandler, EventDetailHandler
 
 
 config = {'webapp2_extras.jinja2': {
@@ -16,8 +18,21 @@ config = {'webapp2_extras.jinja2': {
 }
 
 
+class DummyEventGenerateHandler(webapp2.RequestHandler):
+
+    def get(self):
+        request = json.dumps({'yay': 'request'})
+        response = json.dumps({'yay': 'response'})
+        el = EventLog.new(request, method='GET').get_result()
+        el.close(response).get_result()
+        self.response.write('done.')
+
+
 routes = [
     webapp2.Route('/echo/admin', handler=EventIndexHandler, name='echo-event-index'),
+    webapp2.Route('/echo/admin/dummy-event', handler=DummyEventGenerateHandler),
+    webapp2.Route('/echo/admin/event/detail/<eventId:([A-Za-z0-9-]+)>',
+                  handler=EventDetailHandler, name='echo-event-detail'),
 ]
 
 

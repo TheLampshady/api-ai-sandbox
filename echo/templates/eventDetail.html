@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Event Detail{% endblock %}
+
+{% block content %}
+<h3>Event Detail</h3>
+
+<h4><small>Request</small></h4>
+<blockquote>
+  <pre>
+  {{eventLog.request}}
+  </pre>
+</blockquote>
+
+<h4><small>Response</small></h4>
+<blockquote>
+  <pre>
+  {{eventLog.response}}
+  </pre>
+</blockquote>
+
+{% endblock %}

@@ -13,7 +13,7 @@
   <tbody>
     {% for eventLog in eventLogs %}
     <tr>
-      <td>{{eventLog.created}}</td>
+      <td><a href="{{urlFor('echo-event-detail', eventId=eventLog.key.id())}}">{{eventLog.created}}</a></td>
     </tr>
     {% endfor %}
   </tbody>

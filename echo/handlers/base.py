@@ -51,15 +51,17 @@ class BaseEchoSecurityHandler(webapp2.RequestHandler):
 
     def answer(self, response):
         msg = json.dumps(response)
-        self.eventLog.close(response=msg)
         self.response.write(msg)
+        self.eventLog.close(response=msg).get_result()
 
 
 class BaseEchoHandler(webapp2.RequestHandler):
 
     def __init__(self, *args, **kwargs):
         super(BaseEchoHandler, self).__init__(*args, **kwargs)
-        self.context = {}
+        self.context = {
+            'urlFor': self.urlFor
+        }
 
     @webapp2.cached_property
     def jinja2(self):
