@@ -25,7 +25,7 @@ class HelloWorldHandler(BaseEchoSecurityHandler):
                 name = self.info['request']['intent']['slots']['name']['value'].lower()
 
                 if name == 'ryan':
-                    message = 'Who? You mean Ryan? Fuck that guy.'
+                    message = 'Who? You mean Ryan? Frack that mellon farmer.'
                 elif name in ('levi', 'livi', 'levy'):
                     message = 'A level 9 Jew.'
                 elif name in ('leza', 'lisa', 'liza', 'leeza'):

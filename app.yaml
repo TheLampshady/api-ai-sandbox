@@ -4,6 +4,9 @@ runtime: python27
 api_version: 1
 threadsafe: true
 
+includes:
+- echo/include.yaml
+
 handlers:
 
 ### Static
@@ -12,7 +15,7 @@ handlers:
   secure: always
 
 - url: .*
-  script: main.application
+  script: routes.application
   secure: always
 
 skip_files:

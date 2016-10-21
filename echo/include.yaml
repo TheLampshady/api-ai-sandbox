@@ -1,0 +1,6 @@
+handlers:
+
+- url: .*/echo/admin(/.*)?
+  script: echo.routes.application
+  secure: always
+  login: admin
