@@ -2,9 +2,10 @@ import logging
 import json
 from googleapiclient.discovery import build
 from google.appengine.api import urlfetch
+from google.appengine.ext import ndb
 
 CEREBRO_ROOT = "https://cerebro-dot-gthink-dmx-dev.appspot.com"
-
+SEARCH_PATH = "/_ah/api/search_api/v1/search"
 
 class SearchClient(object):
     _client = None
@@ -52,14 +53,23 @@ class SearchClient(object):
 
     @staticmethod
     def search_url(**kwargs):
-        search_path = "/_ah/api/search_api/v1/search"
-        url = CEREBRO_ROOT + search_path
         if kwargs:
             params = ["%s=%s" % (k,v) for k,v in kwargs.items()]
-            url = "%s?%s" % (url, "&".join(params))
+            url = "%s?%s" % (CEREBRO_ROOT + SEARCH_PATH, "&".join(params))
 
         result = urlfetch.fetch(url)
         return json.loads(result.content)
+
+    @staticmethod
+    @ndb.tasklet
+    def search_url_async(kwargs):
+        if kwargs:
+            params = ["%s=%s" % (k,v) for k,v in kwargs.items()]
+            url = "%s?%s" % (CEREBRO_ROOT + SEARCH_PATH, "&".join(params))
+
+        context = ndb.get_context()
+        result = yield context.urlfetch(url)
+        raise ndb.Return(json.loads(result.content))
 
     def get_facets(self, locale):
         """
