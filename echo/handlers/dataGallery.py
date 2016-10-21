@@ -16,7 +16,41 @@ def load(requestType, intentType, intentTerm):
     )
     context = Context.query()
     intent, context = yield intent.get_async(), context.get_async()
+
+    if not context:
+        context = Context()
     raise ndb.Return(intent, context)
+
+
+def buildResponse(message):
+    return {
+        "version" : "1.0",
+        # "sessionAttributes": {
+        #     "supportedHoriscopePeriods": {
+        #         "daily"  : True,
+        #         "weekly" : False,
+        #         "monthly": False
+        #     }
+        # },
+        "response": {
+            "outputSpeech"    : {
+                "type": "PlainText",
+                "text": message
+            },
+            "card"            : {
+                "type"   : "Simple",
+                "title"  : "Horoscope",
+                "content": message
+            },
+            # "reprompt": {
+            #   "outputSpeech": {
+            #     "type": "PlainText",
+            #     "text": "Can I help you with anything else?"
+            #   }
+            # },
+            "shouldEndSession": True
+        }
+    }
 
 
 class DataGalleryHandler(BaseEchoSecurityHandler):
@@ -32,7 +66,17 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
             intentStr = self.info['request']['intent']['name']
             field = None
 
-            if intentStr == 'WhoIs':
+            if intentStr == 'Execute':
+                command = self.info['request']['intent']['slots']['action']['value'].lower()
+                if command == 'repeat':
+                    context = Context.query().get()
+                    if hasattr(context, 'lastResponse') and context.lastResponse:
+                        return self.answer(buildResponse(message=context.lastResponse))
+                    else:
+                        return self.answer(buildResponse(message='Sorry I could not find a previous response.'))
+                else:
+                    return self.answer(buildResponse(message='Sorry I do not know the command {c}.'.format(c=command)))
+            elif intentStr == 'WhoIs':
                 field = self.info['request']['intent']['slots']['name']['value'].lower()
             elif intentStr == 'SearchFor':
                 field = self.info['request']['intent']['slots']['search']['value'].lower()
@@ -52,34 +96,8 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
             elif searchResult:
                 results = SearchApi.format_text_results(searchResult.get("search_response", []))
                 if results:
-                    message = results[randint(0, len(results))].replace('&', 'and')
+                    message = results[randint(0, len(results) - 1)].replace('&', 'and')
 
-        response = {
-            "version": "1.0",
-            # "sessionAttributes": {
-            #     "supportedHoriscopePeriods": {
-            #         "daily"  : True,
-            #         "weekly" : False,
-            #         "monthly": False
-            #     }
-            # },
-            "response"         : {
-                "outputSpeech"    : {
-                    "type": "PlainText",
-                    "text": message
-                },
-                "card"            : {
-                    "type"   : "Simple",
-                    "title"  : "Horoscope",
-                    "content": message
-                },
-                # "reprompt": {
-                #   "outputSpeech": {
-                #     "type": "PlainText",
-                #     "text": "Can I help you with anything else?"
-                #   }
-                # },
-                "shouldEndSession": True
-            }
-        }
-        self.answer(response)
+        context.lastResponse = message
+        context.put()
+        self.answer(buildResponse(message=message))
