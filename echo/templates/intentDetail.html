@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Intent Detail{% endblock %}
+
+{% block content %}
+<h3>Intent Detail</h3>
+
+<form method="POST">
+  <div class="form-group">
+    <label for="type">Type</label>
+    <input type="text" class="form-control" name="type" id="type" placeholder="SearchFor, WhoIs" value="{{intent.type}}">
+  </div>
+  <div class="form-group">
+    <label for="term">Term</label>
+    <input type="text" class="form-control" name="term" id="term" placeholder="string value" value="{{intent.term}}">
+  </div>
+  <div class="form-group">
+    <label for="message">message</label>
+    <input type="text" class="form-control" name="message" id="message" placeholder="message to display" value="{{intent.message}}">
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+{% endblock %}

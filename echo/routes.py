@@ -3,6 +3,7 @@ import webapp2
 from echo.models.eventLog import EventLog
 from handlers.default import DefaultsHandler
 from handlers.event import EventIndexHandler, EventDetailHandler
+from handlers.intent import IntentIndexHandler, IntentDetailHandler
 
 
 config = {'webapp2_extras.jinja2': {
@@ -35,6 +36,10 @@ routes = [
     webapp2.Route('/echo/admin/dummy-event', handler=DummyEventGenerateHandler),
     webapp2.Route('/echo/admin/event/detail/<eventId:([A-Za-z0-9-]+)>',
                   handler=EventDetailHandler, name='echo-event-detail'),
+    webapp2.Route('/echo/admin/intents',
+                  handler=IntentIndexHandler, name='echo-intents'),
+    webapp2.Route('/echo/admin/intent/<id:([A-Za-z0-9-]+)>',
+                  handler=IntentDetailHandler, name='echo-intent'),
 ]
 
 

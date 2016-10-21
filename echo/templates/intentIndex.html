@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Intents{% endblock %}
+
+{% block content %}
+<h3>Intents</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Request</th>
+      <th>Type</th>
+      <th>Term</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for intent in intents %}
+    <tr>
+      <td><a href="{{urlFor('echo-intent', id=intent.key.id())}}">{{intent.requestType}}</a></td>
+      <td>{{intent.type}}</td>
+      <td>{{intent.term}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
