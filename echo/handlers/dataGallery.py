@@ -80,7 +80,10 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
         if request_type == 'LaunchRequest':
             message = 'Hello huge! Bow to your new master!'
         else:
-            intentStr = self.info['request']['intent']['name']
+            try:
+                intentStr = self.info['request']['intent']['name']
+            except:
+                return self.answer(buildResponse(message='Ending.'))
 
             if intentStr == 'WhoIs':
                 field = self.info['request']['intent']['slots']['name']['value'].lower()
@@ -124,7 +127,7 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
             if intent:
                 message = intent.getAnswer(self.info)
             elif searchResult:
-                results = SearchApi.format_text_results(searchResult.get("search_response", []))
+                results, urls = SearchApi.format_text_results(searchResult.get("search_response", []))
                 if results:
                     message = results[randint(0, len(results) - 1)].replace('&', 'and')
 
