@@ -34,6 +34,7 @@ class QueryTwG(messages.Message):
 class SearchResult(messages.Message):
     text = ListField(1)
     key_words = ListField(2)
+    urls = ListField(3)
 
 
 SEARCH_RESOURCE = endpoints.ResourceContainer(
@@ -70,10 +71,11 @@ class SearchApi(remote.Service):
 
         # result = search_client.search(**params)
         result = search_client.search_url(**params)
-        text_list = self.format_text_results(result.get("search_response", []))
+        text_list, url_list = self.format_text_results(result.get("search_response", []))
 
         return SearchResult(
             text=text_list,
+            urls=url_list,
             key_words=reduce(lambda x, y: x+y, result.get("facets_info").values())
         )
 
@@ -88,9 +90,11 @@ class SearchApi(remote.Service):
 
     @staticmethod
     def format_text_results(entries):
-        result = []
+        text_list = []
+        url_list = []
         for entry in entries:
             text = None
+            url = entry.get("url")
             if entry.get("source_type") == NUGGET_TYPE:
                 card_type = entry.get("card_type")
                 if card_type == DONUT_CART:
@@ -107,8 +111,9 @@ class SearchApi(remote.Service):
                     text = entry.get("title")
 
             if is_valid_text(text):
-                    result.append(text)
-        return result
+                    text_list.append(text)
+                    url_list.append(url)
+        return text_list, url_list
 
 
 def is_valid_text(text):
