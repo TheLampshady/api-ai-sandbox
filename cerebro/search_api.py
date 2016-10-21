@@ -31,7 +31,7 @@ SEARCH_RESOURCE_CONTAINER_FIELDS = {
 class QueryTwG(messages.Message):
     query = messages.StringField(1, default="")
     content_type = messages.StringField(2)
-    locale = messages.StringField(3, defualt=DEFAULT_LOCALE)
+    locale = messages.StringField(3, default=DEFAULT_LOCALE)
     sort = messages.StringField(4)
 
 

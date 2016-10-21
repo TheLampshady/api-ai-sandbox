@@ -1,9 +1,7 @@
-import httplib2, json, endpoints, logging
+import logging
 from googleapiclient.discovery import build
-from oauth2client.contrib.appengine import AppAssertionCredentials
-from google.appengine.api import memcache
-from google.appengine.ext import ndb
-from settings import settings
+
+CEREBRO_ROOT = "https://gthink-dmx-dev.appspot.com"
 
 
 class SearchClient(object):
@@ -17,7 +15,6 @@ class SearchClient(object):
         self._client = build(
             self.api, self.version,
             discoveryServiceUrl=self.get_discovery_url(),
-            http=self.get_credentials(),
             cache_discovery=False
         )
 
@@ -28,23 +25,13 @@ class SearchClient(object):
             self.reset_service()
         return self._client
 
-    @staticmethod
-    def get_credentials():
-        """
-        fetch oAuth2 credentials for communication with cerebro
-        :return: http object
-        """
-        credentials = AppAssertionCredentials(endpoints.EMAIL_SCOPE)
-        http = credentials.authorize(httplib2.Http(memcache))
-        return http
-
     @classmethod
     def get_discovery_url(cls):
         """
         Returns a formatted discovery url
         :return:
         """
-        search_root = "%s/_ah/api" % settings.CEREBRO_ROOT
+        search_root = "%s/_ah/api" % CEREBRO_ROOT
         return cls.discovery_url.format(root=search_root, api=cls.api, v=cls.version)
 
     def search(self, **kwargs):
