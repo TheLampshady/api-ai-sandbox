@@ -1,7 +1,10 @@
 from base import BaseEchoSecurityHandler
+from cerebro import search_client
+from cerebro.search_api import SearchApi
 from echo.models.context import Context
 from echo.models.intent import Intent
 from google.appengine.ext import ndb
+from random import randint
 
 
 @ndb.tasklet
@@ -21,6 +24,7 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
     def post(self):
         message = 'Sorry, if millennials do not know about this it cannot be a thing.'
         request_type = self.info['request']['type']
+        searchResult = None
 
         if request_type == 'LaunchRequest':
             message = 'Hello huge! Bow to your new master!'
@@ -33,6 +37,10 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
             elif intentStr == 'SearchFor':
                 field = self.info['request']['intent']['slots']['search']['value'].lower()
 
+                searchResult = search_client.search(
+                    query=field
+                )
+
             intent, context = load(
                 requestType=request_type,
                 intentType=intentStr,
@@ -41,6 +49,10 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
 
             if intent:
                 message = intent.getAnswer(self.info)
+            elif searchResult:
+                results = SearchApi.format_text_results(searchResult.get("search_response", []))
+                if results:
+                    message = results[randint(0, len(results))].replace('&', 'and')
 
         response = {
             "version": "1.0",
