@@ -18,11 +18,21 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                     message = 'I am ready to kill the humans.'
                 else:
                     message = 'Sorry, do not know who {name} is.'.format(name=name.capitalize())
+            elif intent == 'SearchFor':
+                searchFor = self.info['request']['intent']['slots']['search']['value'].lower()
+
+                if searchFor == 'jews':
+                    message = 'Zach has taught me they are rage monsters that must be stopped.'
+                else:
+                    message = 'You want to search for {s}?'.format(s=searchFor)
+            elif intent == 'Seinfeld':
+                searchFor = self.info['request']['intent']['slots']['search']['value'].lower()
+                message = "What's the deal with {sf}? Do millennials even use them?".format(sf=searchFor)
             else:
                 message = 'Sorry, do not understand that command.'
 
         response = {
-            "version"          : "1.0",
+            "version": "1.0",
             "sessionAttributes": {
                 "supportedHoriscopePeriods": {
                     "daily"  : True,

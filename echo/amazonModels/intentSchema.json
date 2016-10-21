@@ -1,0 +1,28 @@
+{
+  "intents": [
+    {
+      "intent": "Huge",
+      "slots": [
+		{"name": "name", "type": "NAMES"}
+      ]
+    },
+    {
+      "intent": "WhoIs",
+      "slots": [
+        {"name": "name", "type": "NAMES"}
+      ]
+    },
+    {
+      "intent": "SearchFor",
+      "slots": [
+        {"name": "search", "type": "SEARCH"}
+      ]
+    },
+    {
+      "intent": "Seinfeld",
+      "slots": [
+        {"name": "search", "type": "SEARCH"}
+      ]
+    }
+  ]
+}
