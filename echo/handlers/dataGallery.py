@@ -1,3 +1,4 @@
+import logging
 from base import BaseEchoSecurityHandler
 from cerebro import search_client
 from cerebro.search_api import SearchApi
@@ -5,6 +6,8 @@ from echo.models.context import Context
 from echo.models.intent import Intent
 from google.appengine.ext import ndb
 from random import randint
+
+log = logging.getLogger(__name__)
 
 
 @ndb.tasklet
@@ -87,6 +90,10 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
 
             if intentStr == 'WhoIs':
                 field = self.info['request']['intent']['slots']['name']['value'].lower()
+            elif intentStr == 'HelpIntent':
+                return self.answer(buildResponse(
+                    message='I provide small bits of marketing information. Ask for info about something.'
+                ))
             elif intentStr == 'SearchFor':
                 field = self.info['request']['intent']['slots']['search'].get('value', '')\
                     .lower().replace('the', '').replace('and', '')
@@ -123,8 +130,14 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                     return self.answer(buildResponse(message='Sorry I do not know the command {c}.'.format(c=command)))
 
             if field:
+                from cerebro import NUGGET_TYPE, ARTICLE_TYPE, CARD_TYPES, DEFAULT_LOCALE
                 searchResult = search_client.search(
-                    query=field
+                    query=field,
+                    locale=DEFAULT_LOCALE,
+                    count=False,
+                    limit=40,
+                    sort_field='relevance',
+                    source_type=NUGGET_TYPE
                 )
 
             if intent:
@@ -133,10 +146,12 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                 results, urls = SearchApi.format_text_results(searchResult.get("search_response", []))
                 if results:
                     message = results[randint(0, len(results) - 1)].replace('&', 'and')
+                    log.info(results)
+                    log.info(message)
 
-                    if len(results) > 1:
-                        reprompt = 'I found more than {c} results. Would you like to hear another?'.format(
-                            c=(len(results) - 1))
+                    # if len(results) > 1:
+                    #     reprompt = 'I found more than {c} results. Would you like to hear another?'.format(
+                    #         c=(len(results) - 1))
             else:
                 return self.answer(buildResponse(message='Huge could not find a matching command.'))
 
