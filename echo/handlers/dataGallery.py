@@ -106,12 +106,11 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                 intentTerm=field
             ).get_result()
 
-            if intentStr == 'Continue':
-                cont = self.info['request']['intent']['slots']['response']['value']
-                if cont in CONTINUE_LIST and hasattr(context, 'lastField') and context.lastField:
+            if intentStr == 'YesIntent':
+                if hasattr(context, 'lastField') and context.lastField:
                         field = context.lastField
-                else:
-                    return self.answer(buildResponse(message='Was that good for you too?'))
+            elif intentStr == 'NoIntent':
+                return self.answer(buildResponse(message='Was that good for you too?'))
 
             if intentStr == 'Execute':
                 command = self.info['request']['intent']['slots']['action']['value'].lower()
@@ -130,7 +129,7 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                     return self.answer(buildResponse(message='Sorry I do not know the command {c}.'.format(c=command)))
 
             if field:
-                from cerebro import NUGGET_TYPE, ARTICLE_TYPE, CARD_TYPES, DEFAULT_LOCALE
+                from cerebro import NUGGET_TYPE, DEFAULT_LOCALE
                 searchResult = search_client.search(
                     query=field,
                     locale=DEFAULT_LOCALE,
@@ -149,9 +148,9 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                     log.info(results)
                     log.info(message)
 
-                    # if len(results) > 1:
-                    #     reprompt = 'I found more than {c} results. Would you like to hear another?'.format(
-                    #         c=(len(results) - 1))
+                    if len(results) > 1:
+                        reprompt = 'I found more than {c} results. Would you like to hear another?'.format(
+                            c=(len(results) - 1))
             else:
                 return self.answer(buildResponse(message='Huge could not find a matching command.'))
 
