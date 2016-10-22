@@ -5,7 +5,7 @@ from google.appengine.api import urlfetch
 from google.appengine.ext import ndb
 import urllib
 
-CEREBRO_ROOT = "https://cerebro-dot-gthink-dmx-dev.appspot.com"
+CEREBRO_ROOT = "https://cerebro-dot-gthink-insights.appspot.com"
 SEARCH_PATH = "/_ah/api/search_api/v1/search"
 
 
