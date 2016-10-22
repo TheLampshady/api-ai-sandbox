@@ -75,6 +75,7 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
     def post(self):
         message = 'Sorry, if millennials do not know about this it cannot be a thing.'
         request_type = self.info['request']['type']
+        newSession = self.info['session']['new']
         searchResult = None
         field = None
         intentStr = None
@@ -91,12 +92,19 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
             if intentStr == 'WhoIs':
                 field = self.info['request']['intent']['slots']['name']['value'].lower()
             elif intentStr == 'HelpIntent':
+                context = Context.query().get()
+                context.lastIntentType = None
+                context.lastField = None
+                context.sessionCount = 0
+                context.put()
                 return self.answer(buildResponse(
-                    message='I provide small bits of marketing information. Ask for info about something.'
+                    message='I provide small bits of marketing information. For example say stats about youtube.',
+                    reprompt='Say stats about youtube.',
                 ))
             elif intentStr == 'SearchFor':
                 field = self.info['request']['intent']['slots']['search'].get('value', '')\
-                    .lower().replace('the', '').replace('and', '')
+                    .lower().replace('the', '').replace('and', '').replace('you tube', 'youtube')\
+                    .replace('super bowl', 'superbowl').replace("'", "")
                 if not field:
                     return self.answer(buildResponse(message='Missing search term.'))
 
@@ -106,11 +114,26 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                 intentTerm=field
             ).get_result()
 
+            if newSession:
+                context.sessionCount = 0
+            else:
+                if hasattr(context, 'sessionCount'):
+                    context.sessionCount += 1
+                else:
+                    context.sessionCount = 1
+
             if intentStr == 'YesIntent':
                 if hasattr(context, 'lastField') and context.lastField:
                         field = context.lastField
             elif intentStr == 'NoIntent':
-                return self.answer(buildResponse(message='Was that good for you too?'))
+                if getattr(context, 'sessionCount', 0) > 1:
+                    context.lastIntentType = None
+                    context.lastField = None
+                    context.sessionCount = 0
+                    context.put()
+                    return self.answer(buildResponse(message='Was that good for you too?'))
+                else:
+                    return self.answer(buildResponse(message='ok'))
 
             if intentStr == 'Execute':
                 command = self.info['request']['intent']['slots']['action']['value'].lower()
