@@ -101,6 +101,11 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                     message='I provide small bits of marketing information. For example say stats about youtube.',
                     reprompt='Say stats about youtube.',
                 ))
+            elif intentStr == 'Seinfeld':
+                joke = self.info['request']['intent']['slots']['search']['value']
+                return self.answer(buildResponse(
+                    message="What's the deal with {search}? I don't get it.".format(search=joke)
+                ))
             elif intentStr == 'SearchFor':
                 field = self.info['request']['intent']['slots']['search'].get('value', '')\
                     .lower().replace('the', '').replace('and', '').replace('you tube', 'youtube')\

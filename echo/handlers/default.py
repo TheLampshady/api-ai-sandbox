@@ -30,7 +30,7 @@ class DefaultsHandler(BaseEchoHandler):
         Intent(
             type='Seinfeld',
             # term='',
-            message="What's the deal with {search}? Do millennials care?"
+            message="What's the deal with {search}? I don't get it."
         ).put()
 
         self.response.write('done.')
