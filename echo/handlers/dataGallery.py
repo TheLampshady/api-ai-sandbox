@@ -73,7 +73,9 @@ CONTINUE_LIST = ('yes', 'sure', 'please', 'yeah', 'go for it', 'shoot', 'go', 'y
 class DataGalleryHandler(BaseEchoSecurityHandler):
 
     def post(self):
-        message = 'I could not find any matching data points. Try dads, moms, superbowl, millennials, youtube, etc'
+        message = '''
+        I could not find any matching data points. Here is a hint. Try dads, moms, superbowl, millennials, youtube, etc
+        '''
         request_type = self.info['request']['type']
         newSession = self.info['session']['new']
         searchResult = None
