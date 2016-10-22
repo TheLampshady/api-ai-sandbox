@@ -123,7 +123,8 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
 
             if field:
                 searchResult = search_client.search(
-                    query=field
+                    query=field,
+                    count=False,
                 )
 
             if intent:

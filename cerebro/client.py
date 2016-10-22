@@ -3,6 +3,7 @@ import json
 from googleapiclient.discovery import build
 from google.appengine.api import urlfetch
 from google.appengine.ext import ndb
+import urllib
 
 CEREBRO_ROOT = "https://cerebro-dot-gthink-dmx-dev.appspot.com"
 SEARCH_PATH = "/_ah/api/search_api/v1/search"
@@ -54,9 +55,9 @@ class SearchClient(object):
 
     @staticmethod
     def search_url(**kwargs):
-        if kwargs:
-            params = ["%s=%s" % (k,v) for k,v in kwargs.items()]
-            url = "%s?%s" % (CEREBRO_ROOT + SEARCH_PATH, "&".join(params))
+        params = urllib.urlencode(kwargs)
+        if params:
+            url = "%s?%s" % (CEREBRO_ROOT + SEARCH_PATH, params)
 
         result = urlfetch.fetch(url)
         return json.loads(result.content)
