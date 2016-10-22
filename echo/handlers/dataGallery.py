@@ -174,6 +174,8 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                     if len(results) > 1:
                         reprompt = 'I found more than {c} results. Would you like to hear another?'.format(
                             c=(len(results) - 1))
+                    else:
+                        reprompt = 'Anything else?'
             else:
                 return self.answer(buildResponse(message='Huge could not find a matching command.'))
 
