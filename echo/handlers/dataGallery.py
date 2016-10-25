@@ -108,7 +108,7 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
                 return self.answer(buildResponse(
                     message="What's the deal with {search}? I don't get it.".format(search=joke)
                 ))
-            elif intentStr == 'SearchFor':
+            elif intentStr in ('SearchFor', 'StartDeckIntent'):
                 field = self.info['request']['intent']['slots']['search'].get('value', '')\
                     .lower().replace('the', '').replace('and', '').replace('you tube', 'youtube')\
                     .replace('super bowl', 'superbowl').replace("'", "")
@@ -174,15 +174,25 @@ class DataGalleryHandler(BaseEchoSecurityHandler):
             elif searchResult:
                 results, urls = SearchApi.format_text_results(searchResult.get("search_response", []))
                 if results:
-                    message = results[randint(0, len(results) - 1)].replace('&', 'and')
+                    if intentStr == 'StartDeckIntent':
+                        if len(results) > 1:
+                            message = 'I have more than {c} results for {search}.'.format(
+                                c=(len(results) - 1),
+                                search=field
+                            )
+                        else:
+                            message = 'Sorry, I have no result for {search}'.format(search=field)
+                    else:
+                        message = results[randint(0, len(results) - 1)].replace('&', 'and')
+                        if len(results) > 1:
+                            reprompt = 'I found more than {c} results. Would you like to hear another?'.format(
+                                c=(len(results) - 1))
+                        else:
+                            reprompt = 'Anything else?'
+
                     log.info(results)
                     log.info(message)
 
-                    if len(results) > 1:
-                        reprompt = 'I found more than {c} results. Would you like to hear another?'.format(
-                            c=(len(results) - 1))
-                    else:
-                        reprompt = 'Anything else?'
             else:
                 return self.answer(buildResponse(message='Huge could not find a matching command.'))
 
